@@ -1,0 +1,20 @@
+{
+  "config": {
+    "flow_title": "{name}",
+    "step": {
+      "user": {
+        "description": "Choose the light to set up.",
+        "data": {
+          "address": "Device"
+        }
+      },
+      "bluetooth_confirm": {
+        "description": "Set up {name}?"
+      }
+    },
+    "abort": {
+      "already_configured": "This light is already configured.",
+      "no_devices_found": "No Raingel lights found. Make sure the light is powered on, in Bluetooth range, and not connected to the phone app."
+    }
+  }
+}
