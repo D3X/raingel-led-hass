@@ -50,8 +50,11 @@ def cmd_color(r: int, g: int, b: int) -> bytes:
 
 
 def cmd_mic(sensitivity: int, mode: int) -> bytes:
-    """Start a music mode using the lamp's microphone. Sensitivity is 0-100."""
-    return bytes([OP_MIC, _byte(sensitivity, 100), mode & 0x03])
+    """Start a music mode using the lamp's microphone. Sensitivity is 0-100.
+
+    The mode byte comes first, confirmed on hardware.
+    """
+    return bytes([OP_MIC, mode & 0x03, _byte(sensitivity, 100)])
 
 
 def _palette(indices: tuple[int, ...]) -> bytes:
