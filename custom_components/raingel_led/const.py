@@ -12,7 +12,7 @@ CHAR_WRITE = "0000ae01-0000-1000-8000-00805f9b34fb"
 
 # Drop the BLE connection after this many idle seconds so the phone app
 # can still connect when Home Assistant isn't actively using the light.
-DISCONNECT_DELAY = 120
+DISCONNECT_DELAY = 10
 
 OP_POWER = 0x01
 OP_BRIGHTNESS = 0x02
