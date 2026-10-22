@@ -26,7 +26,6 @@ from .const import (
     EFFECT_SPEED,
     EFFECTS,
     MUSIC_EFFECTS,
-    MUSIC_SENSITIVITY,
 )
 from .device import (
     RaingelDevice,
@@ -94,7 +93,7 @@ class RaingelLight(LightEntity, RestoreEntity):
         if kwargs.get(ATTR_EFFECT) in MUSIC_EFFECTS:
             self._attr_effect = kwargs[ATTR_EFFECT]
             commands.append(
-                cmd_mic(MUSIC_SENSITIVITY, MUSIC_EFFECTS[self._attr_effect])
+                cmd_mic(MUSIC_EFFECTS[self._attr_effect])
             )
             if ATTR_BRIGHTNESS in kwargs:
                 commands.append(cmd_brightness(round(brightness / 255 * 100)))

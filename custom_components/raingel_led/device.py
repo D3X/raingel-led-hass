@@ -49,12 +49,13 @@ def cmd_color(r: int, g: int, b: int) -> bytes:
     return bytes([OP_COLOR, _byte(r), _byte(g), _byte(b), 0, 0, 0])
 
 
-def cmd_mic(sensitivity: int, mode: int) -> bytes:
-    """Start a music mode using the lamp's microphone. Sensitivity is 0-100.
+def cmd_mic(mode: int) -> bytes:
+    """Start a music mode using the lamp's microphone.
 
-    The mode byte comes first, confirmed on hardware.
+    Opcode 04 takes a mode byte and, per the app, a second byte that the lamp
+    ignores (varying it from 0 to 255 changed nothing), so it is left out.
     """
-    return bytes([OP_MIC, mode & 0x03, _byte(sensitivity, 100)])
+    return bytes([OP_MIC, mode & 0x03])
 
 
 def _palette(indices: tuple[int, ...]) -> bytes:
