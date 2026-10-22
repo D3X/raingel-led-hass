@@ -84,13 +84,13 @@ class RaingelLight(LightEntity, RestoreEntity):
             self._attr_effect = None
             self._attr_rgb_color = kwargs[ATTR_RGB_COLOR]
             commands.append(cmd_color(*self._attr_rgb_color))
-            commands.append(cmd_brightness(brightness))
+            commands.append(cmd_brightness(round(brightness / 255 * 100)))
         elif ATTR_BRIGHTNESS in kwargs:
             if self._attr_effect:
                 # Effects carry their own brightness byte.
                 commands.append(self._effect_command(brightness))
             else:
-                commands.append(cmd_brightness(brightness))
+                commands.append(cmd_brightness(round(brightness / 255 * 100)))
 
         await self._device.send(*commands)
         self._attr_brightness = brightness
