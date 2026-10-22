@@ -23,6 +23,7 @@ from .const import (
     DISCONNECT_DELAY,
     OP_BRIGHTNESS,
     OP_COLOR,
+    OP_MIC,
     OP_MODE,
     OP_POWER,
 )
@@ -46,6 +47,11 @@ def cmd_brightness(level: int) -> bytes:
 def cmd_color(r: int, g: int, b: int) -> bytes:
     """Static colour; cancels any running effect."""
     return bytes([OP_COLOR, _byte(r), _byte(g), _byte(b), 0, 0, 0])
+
+
+def cmd_mic(sensitivity: int, mode: int) -> bytes:
+    """Start a music mode using the lamp's microphone. Sensitivity is 0-100."""
+    return bytes([OP_MIC, _byte(sensitivity, 100), mode & 0x03])
 
 
 def _palette(indices: tuple[int, ...]) -> bytes:

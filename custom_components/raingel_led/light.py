@@ -20,8 +20,22 @@ from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.restore_state import RestoreEntity
 
 from . import RaingelConfigEntry
-from .const import DOMAIN, EFFECT_PALETTE, EFFECT_SPEED, EFFECTS
-from .device import RaingelDevice, cmd_brightness, cmd_color, cmd_mode, cmd_power
+from .const import (
+    DOMAIN,
+    EFFECT_PALETTE,
+    EFFECT_SPEED,
+    EFFECTS,
+    MUSIC_EFFECTS,
+    MUSIC_SENSITIVITY,
+)
+from .device import (
+    RaingelDevice,
+    cmd_brightness,
+    cmd_color,
+    cmd_mic,
+    cmd_mode,
+    cmd_power,
+)
 
 
 async def async_setup_entry(
@@ -41,7 +55,7 @@ class RaingelLight(LightEntity, RestoreEntity):
     _attr_color_mode = ColorMode.RGB
     _attr_supported_color_modes = {ColorMode.RGB}
     _attr_supported_features = LightEntityFeature.EFFECT
-    _attr_effect_list = list(EFFECTS)
+    _attr_effect_list = [*EFFECTS, *MUSIC_EFFECTS]
 
     def __init__(self, device: RaingelDevice, title: str) -> None:
         self._device = device
@@ -67,7 +81,7 @@ class RaingelLight(LightEntity, RestoreEntity):
             self._attr_brightness = brightness
         if (rgb := last.attributes.get(ATTR_RGB_COLOR)) is not None:
             self._attr_rgb_color = tuple(rgb)
-        if last.attributes.get(ATTR_EFFECT) in EFFECTS:
+        if last.attributes.get(ATTR_EFFECT) in self._attr_effect_list:
             self._attr_effect = last.attributes[ATTR_EFFECT]
 
     async def async_turn_on(self, **kwargs: Any) -> None:
@@ -77,7 +91,14 @@ class RaingelLight(LightEntity, RestoreEntity):
 
         brightness = kwargs.get(ATTR_BRIGHTNESS, self._attr_brightness)
 
-        if ATTR_EFFECT in kwargs and kwargs[ATTR_EFFECT] in EFFECTS:
+        if kwargs.get(ATTR_EFFECT) in MUSIC_EFFECTS:
+            self._attr_effect = kwargs[ATTR_EFFECT]
+            commands.append(
+                cmd_mic(MUSIC_SENSITIVITY, MUSIC_EFFECTS[self._attr_effect])
+            )
+            if ATTR_BRIGHTNESS in kwargs:
+                commands.append(cmd_brightness(round(brightness / 255 * 100)))
+        elif ATTR_EFFECT in kwargs and kwargs[ATTR_EFFECT] in EFFECTS:
             self._attr_effect = kwargs[ATTR_EFFECT]
             commands.append(self._effect_command(brightness))
         elif ATTR_RGB_COLOR in kwargs:
@@ -86,7 +107,9 @@ class RaingelLight(LightEntity, RestoreEntity):
             commands.append(cmd_color(*self._attr_rgb_color))
             commands.append(cmd_brightness(round(brightness / 255 * 100)))
         elif ATTR_BRIGHTNESS in kwargs:
-            if self._attr_effect:
+            if self._attr_effect in MUSIC_EFFECTS:
+                commands.append(cmd_brightness(round(brightness / 255 * 100)))
+            elif self._attr_effect:
                 # Effects carry their own brightness byte.
                 commands.append(self._effect_command(brightness))
             else:

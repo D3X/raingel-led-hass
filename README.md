@@ -17,6 +17,9 @@ so the light shows up in Apple Home and Siri.
 - All 18 built-in effects: Fade, Jump, Breathe, Flash, Meteor, Stack, Float,
   Follow spot, Wave, Water, Rainbow, Blink, Bounce, Shuttle, Twinkle, On/off,
   Curtain, Alternate
+- Four music modes using the lamp's built-in microphone (Classic, Roll,
+  Energy, Spectrum), fixed at sensitivity 80. Untested on hardware: if modes
+  and sensitivity look swapped, the byte order in `cmd_mic` needs flipping
 - Automatic Bluetooth discovery
 - Works with a local Bluetooth adapter (including on Home Assistant OS) or an
   ESPHome Bluetooth proxy
@@ -119,6 +122,7 @@ The log shows every command sent to the light as hex.
 | Brightness | `02 <0-255>` |
 | Colour | `03 r g b 00 00 00` |
 | Effect | `07 <mode> <speed 0-100> <brightness 0-100> <palette…>` |
+| Music (mic) | `04 <sensitivity 0-100> <mode 0-3>` |
 
 Commands are written without response to characteristic `AE01` (service
 `AE30`). All of this was worked out by

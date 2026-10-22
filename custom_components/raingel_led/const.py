@@ -18,6 +18,7 @@ OP_POWER = 0x01
 OP_BRIGHTNESS = 0x02
 OP_COLOR = 0x03
 OP_MODE = 0x07
+OP_MIC = 0x04
 
 # Firmware effect ids (opcode 0x07).
 EFFECTS = {
@@ -45,3 +46,12 @@ EFFECTS = {
 # 6 orange, 7 white. This is the app's "spectrum" preset.
 EFFECT_PALETTE = (0, 6, 3, 1, 4, 2, 5)
 EFFECT_SPEED = 50
+
+# Music modes driven by the lamp's built-in microphone (opcode 0x04).
+MUSIC_EFFECTS = {
+    "Music: Classic": 0,
+    "Music: Roll": 1,
+    "Music: Energy": 2,
+    "Music: Spectrum": 3,
+}
+MUSIC_SENSITIVITY = 80  # 0-100
