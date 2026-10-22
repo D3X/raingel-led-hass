@@ -54,4 +54,4 @@ MUSIC_EFFECTS = {
     "Music: Energy": 2,
     "Music: Spectrum": 3,
 }
-MUSIC_SENSITIVITY = 80  # 0-100
+MUSIC_SENSITIVITY = 30  # 0-100
