@@ -82,8 +82,8 @@ include scenes in the bridge.
 
 - **Assumed state.** The controller doesn't report its state, so if you change it
   with the remote or phone app, Home Assistant won't know.
-- **One connection at a time.** Home Assistant keeps the connection open for 10
-  seconds after the last command. The phone app can't connect during that
+- **One connection at a time.** Home Assistant keeps the connection open for 2
+  minutes after the last command. The phone app can't connect during that
   time.
 - **Colour accuracy.** Only saturated colours (red, green, blue, yellow, cyan,
   magenta, white) reproduce reliably on this hardware. In-between colours may
