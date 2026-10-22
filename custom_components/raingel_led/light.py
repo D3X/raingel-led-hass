@@ -26,7 +26,6 @@ from .const import (
     EFFECT_SPEED,
     EFFECTS,
     MUSIC_EFFECTS,
-    MUSIC_SENSITIVITY,
 )
 from .device import (
     RaingelDevice,
@@ -83,6 +82,7 @@ class RaingelLight(LightEntity, RestoreEntity):
             self._attr_rgb_color = tuple(rgb)
         if last.attributes.get(ATTR_EFFECT) in self._attr_effect_list:
             self._attr_effect = last.attributes[ATTR_EFFECT]
+        self._sync_music_mode()
 
     async def async_turn_on(self, **kwargs: Any) -> None:
         commands: list[bytes] = []
@@ -94,7 +94,9 @@ class RaingelLight(LightEntity, RestoreEntity):
         if kwargs.get(ATTR_EFFECT) in MUSIC_EFFECTS:
             self._attr_effect = kwargs[ATTR_EFFECT]
             commands.append(
-                cmd_mic(MUSIC_SENSITIVITY, MUSIC_EFFECTS[self._attr_effect])
+                cmd_mic(
+                    self._device.music_sensitivity, MUSIC_EFFECTS[self._attr_effect]
+                )
             )
             if ATTR_BRIGHTNESS in kwargs:
                 commands.append(cmd_brightness(round(brightness / 255 * 100)))
@@ -118,12 +120,19 @@ class RaingelLight(LightEntity, RestoreEntity):
         await self._device.send(*commands)
         self._attr_brightness = brightness
         self._attr_is_on = True
+        self._sync_music_mode()
         self.async_write_ha_state()
 
     async def async_turn_off(self, **kwargs: Any) -> None:
         await self._device.send(cmd_power(False))
         self._attr_is_on = False
+        self._sync_music_mode()
         self.async_write_ha_state()
+
+    def _sync_music_mode(self) -> None:
+        """Tell the sensitivity slider whether a music mode is running."""
+        active = self._attr_is_on and self._attr_effect in MUSIC_EFFECTS
+        self._device.music_mode = MUSIC_EFFECTS[self._attr_effect] if active else None
 
     def _effect_command(self, brightness: int) -> bytes:
         return cmd_mode(

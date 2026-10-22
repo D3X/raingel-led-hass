@@ -10,7 +10,7 @@ from homeassistant.exceptions import ConfigEntryNotReady
 
 from .device import RaingelDevice
 
-PLATFORMS = [Platform.LIGHT]
+PLATFORMS = [Platform.LIGHT, Platform.NUMBER]
 
 type RaingelConfigEntry = ConfigEntry[RaingelDevice]
 

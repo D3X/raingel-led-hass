@@ -18,7 +18,8 @@ so the light shows up in Apple Home and Siri.
   Follow spot, Wave, Water, Rainbow, Blink, Bounce, Shuttle, Twinkle, On/off,
   Curtain, Alternate
 - Four music modes using the lamp's built-in microphone (Classic, Roll,
-  Energy, Spectrum), fixed at sensitivity 30
+  Energy, Spectrum), with a "Music sensitivity" slider
+  (default 30) that applies immediately while a music mode is running
 - Automatic Bluetooth discovery
 - Works with a local Bluetooth adapter (including on Home Assistant OS) or an
   ESPHome Bluetooth proxy

@@ -21,6 +21,7 @@ except ImportError:  # not on Linux/BlueZ
 from .const import (
     CHAR_WRITE,
     DISCONNECT_DELAY,
+    MUSIC_SENSITIVITY,
     OP_BRIGHTNESS,
     OP_COLOR,
     OP_MIC,
@@ -123,6 +124,9 @@ class RaingelDevice:
         self._client: BleakClientWithServiceCache | None = None
         self._lock = asyncio.Lock()
         self._disconnect_timer: asyncio.TimerHandle | None = None
+        # Shared by the light and number entities.
+        self.music_sensitivity = MUSIC_SENSITIVITY
+        self.music_mode: int | None = None  # active music mode id, if any
 
     @property
     def address(self) -> str:

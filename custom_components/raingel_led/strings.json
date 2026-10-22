@@ -16,5 +16,12 @@
       "already_configured": "This light is already configured.",
       "no_devices_found": "No Raingel lights found. Make sure the light is powered on, in Bluetooth range, and not connected to the phone app."
     }
+  },
+  "entity": {
+    "number": {
+      "music_sensitivity": {
+        "name": "Music sensitivity"
+      }
+    }
   }
 }
