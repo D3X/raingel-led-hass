@@ -20,7 +20,6 @@ except ImportError:  # not on Linux/BlueZ
 
 from .const import (
     CHAR_WRITE,
-    DISCONNECT_DELAY,
     OP_BRIGHTNESS,
     OP_COLOR,
     OP_MIC,
@@ -123,7 +122,6 @@ class RaingelDevice:
         self._ble_device = ble_device
         self._client: BleakClientWithServiceCache | None = None
         self._lock = asyncio.Lock()
-        self._disconnect_timer: asyncio.TimerHandle | None = None
 
     @property
     def address(self) -> str:
@@ -148,7 +146,6 @@ class RaingelDevice:
                     await self._disconnect()
                     if attempt:
                         raise
-            self._schedule_disconnect()
 
     async def _ensure_connected(self) -> BleakClientWithServiceCache:
         if self._client and self._client.is_connected:
@@ -158,26 +155,22 @@ class RaingelDevice:
             BleakClientWithServiceCache,
             self._ble_device,
             self._ble_device.name or self.address,
+            disconnected_callback=self._on_disconnected,
             ble_device_callback=lambda: self._ble_device,
         )
         return self._client
 
-    def _schedule_disconnect(self) -> None:
-        if self._disconnect_timer:
-            self._disconnect_timer.cancel()
-        loop = asyncio.get_running_loop()
-        self._disconnect_timer = loop.call_later(
-            DISCONNECT_DELAY, lambda: loop.create_task(self._timed_disconnect())
-        )
+    def _on_disconnected(self, client: BleakClientWithServiceCache) -> None:
+        """The lamp dropped the link (unplugged, out of range, power cycled).
 
-    async def _timed_disconnect(self) -> None:
-        async with self._lock:
-            await self._disconnect()
+        Forget the client so the next command reconnects instead of writing
+        into a dead link.
+        """
+        _LOGGER.debug("%s disconnected", self.address)
+        if client is self._client:
+            self._client = None
 
     async def _disconnect(self) -> None:
-        if self._disconnect_timer:
-            self._disconnect_timer.cancel()
-            self._disconnect_timer = None
         client, self._client = self._client, None
         if client and client.is_connected:
             try:

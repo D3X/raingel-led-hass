@@ -81,9 +81,10 @@ include scenes in the bridge.
 
 - **Assumed state.** The controller doesn't report its state, so if you change it
   with the remote or phone app, Home Assistant won't know.
-- **One connection at a time.** Home Assistant keeps the connection open for 2
-  minutes after the last command. The phone app can't connect during that
-  time.
+- **One connection at a time.** Home Assistant keeps the connection open, so the
+  phone app can't connect to the light. To use the app, disable the integration
+  entry (or power-cycle the light after closing the app). If the light drops off
+  (unplugged, out of range), Home Assistant reconnects on the next command.
 - **Colour accuracy.** Only saturated colours (red, green, blue, yellow, cyan,
   magenta, white) reproduce reliably on this hardware. In-between colours may
   look off.
